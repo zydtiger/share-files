@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="/lib/jquery/jquery-3.6.0.min.js"></script>
+    <script src="/lib/bootstrap-3.4.1-dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="/lib/bootstrap-3.4.1-dist/css/bootstrap.min.css">
+    <title>File Sharing {{reqPath}}</title>
+    <script src="/scripts/js/index.js"></script>
+
+    <style>
+        thead {
+            background-color: rgb(133, 207, 226);
+        }
+
+        th:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        #date-sort .caret,
+        #size-sort .caret {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <h1>Index of {{reqPath}}</h1>
+        <table class="table table-striped table-bordered table-hover" onload="console.log('loaded table')">
+            <thead>
+                <tr>
+                    <th>ICON</th>
+                    <th onclick="sortByName()" id="name-sort">NAME </th>
+                    <th onclick="sortByDate()" id="date-sort">MODIFIED </th>
+                    <th onclick="sortBySize()" id="size-sort">SIZE </th>
+                    <th onclick="sortByType()" id="type-sort">TYPE </th>
+                </tr>
+            </thead>
+            <tbody id="files">
+                {{each entries}}
+                <tr>
+                    <td style="display: none;" class="rawsize">{{$value.rawsize}}</td>
+                    <td>
+                        <span class="{{$value.icon}}" style="color: {{$value.color}};"></span>
+                    </td>
+                    <td class="filename">
+                        <a href="{{$value.link}}">
+                            {{$value.filename}}
+                        </a>
+                    </td>
+                    <td class="mtime">{{$value.mtime}}</td>
+                    <td>{{$value.filesize}}</td>
+                    <td class="type">{{$value.type}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+    </div>
+</body>
+
+</html>

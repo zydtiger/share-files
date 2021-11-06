@@ -1,0 +1,23 @@
+{
+  "name": "share-files",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "npx node-dev ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "art-template": "^4.13.2",
+    "basic-auth": "^2.0.1",
+    "express": "^4.17.1",
+    "express-art-template": "^1.0.1",
+    "safe-compare": "^1.1.4"
+  },
+  "devDependencies": {
+    "node-dev": "^7.0.0"
+  }
+}
