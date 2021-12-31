@@ -15,7 +15,8 @@
     "basic-auth": "^2.0.1",
     "express": "^4.17.1",
     "express-art-template": "^1.0.1",
-    "safe-compare": "^1.1.4"
+    "safe-compare": "^1.1.4",
+    "sha256": "^0.2.0"
   },
   "devDependencies": {
     "node-dev": "^7.0.0"

@@ -1,4 +1,6 @@
-const fs = require('fs')
+const fs = require('fs'),
+    config = require('../config'),
+    path = require('path')
 
 const GB = Math.pow(2, 30),
     MB = Math.pow(2, 20),
@@ -27,7 +29,7 @@ exports.initEntries = function (reqPath, dirPath) {
 
     let entries = []
     for (let filename of filenames) {
-        let info = fs.lstatSync(join(dirPath, filename))
+        let info = fs.lstatSync(path.resolve(dirPath, filename))
 
         entries.push({
             icon: info.isDirectory() ? 'glyphicon glyphicon-folder-close' : 'glyphicon glyphicon-file',
@@ -37,7 +39,7 @@ exports.initEntries = function (reqPath, dirPath) {
             rawsize: info.isDirectory() ? 0 : info.size,
             type: info.isDirectory() ? 'DIR' : 'FILE',
             mtime: info.mtime.format('yyyy/MM/dd hh:mm'),
-            link: encodeURI(join(reqPath, filename).replace('\\', '/'))
+            link: encodeURI(path.join(reqPath, filename).replace('\\', '/'))
         })
     }
 

@@ -2,7 +2,10 @@ const express = require('express'),
     fs = require('fs'),
     lib = require('./lib'),
     auth = require('basic-auth'),
-    safeCompare = require('safe-compare')
+    safeCompare = require('safe-compare'),
+    sha256 = require('sha256'),
+    config = require('../config'),
+    path = require('path')
 
 const router = express.Router()
 
@@ -10,25 +13,23 @@ const router = express.Router()
 router.get(/^\/(?!(lib\/|scripts\/)).*(?<!favicon\.ico)$/, (req, res) => {
     let reqPath = decodeURI(req.path)
 
-    let path = join(public, reqPath)
-
     if (reqPath.startsWith('/secured')) {
-        authenticate(req, res, validate, () => renderEntries(res, reqPath, path))
-    } else renderEntries(res, reqPath, path)
-
+        authenticate(req, res, () => renderEntries(res, reqPath))
+    } else renderEntries(res, reqPath)
 })
 
-function renderEntries(res, reqPath, path) {
-    log('[Accessing]\t', path)
+function renderEntries(res, reqPath) {
+    let dirpath = path.resolve(config.public, reqPath.slice(1))
+    config.log('[Accessing]\t', dirpath)
     try {
-        if (fs.lstatSync(path).isDirectory()) {
+        if (fs.lstatSync(dirpath).isDirectory()) {
             res.render('index.html', {
                 reqPath: reqPath,
-                entries: lib.initEntries(reqPath, path)
+                entries: lib.initEntries(reqPath, dirpath)
             })
         }
     } catch (e) {
-        err(e)
+        config.err(e)
         res.render('404.html', {
             err: e
         })
@@ -36,13 +37,13 @@ function renderEntries(res, reqPath, path) {
 }
 
 function validate(name, pass) {
-    return safeCompare(name, global.name) && safeCompare(pass, global.pass)
+    return safeCompare(sha256(name), global.name) && safeCompare(sha256(pass), global.pass)
 }
 
-function authenticate(req, res, check, done) {
+function authenticate(req, res, done) {
     let credentials = auth(req)
 
-    if (!credentials || !check(credentials.name, credentials.pass)) {
+    if (!credentials || !validate(credentials.name, credentials.pass)) {
         res.statusCode = 401
         res.setHeader('WWW-Authenticate', 'Basic realm="secured folder"')
         res.end('Access denied')
